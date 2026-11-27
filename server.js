@@ -14,9 +14,9 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 app.use(express.static('public'));
 app.use(express.json());
 
-// 【新增】解决 Cannot GET /，访问首页返回 public/index.html
+// 适配Vercel，修复 __dirname 路径导致500报错
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+  res.redirect('/index.html');
 });
 
 // 获取任务列表，按创建时间倒序
@@ -68,7 +68,7 @@ app.delete('/api/tasks/:id', async (req, res) => {
   res.json({ ok: true });
 });
 
-// 本地运行入口（Vercel部署不会执行这段）
+// 本地运行入口，Vercel不会执行这块代码
 if (require.main === module) {
   app.listen(port, () => {
     console.log(`本地服务：http://localhost:${port}`);
